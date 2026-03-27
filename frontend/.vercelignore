@@ -1,0 +1,23 @@
+# Backend files
+/backend
+
+# Documentation
+README.md
+LICENSE
+
+# Development files
+.git
+.gitignore
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Old projects
+excellence-centerpiece/
