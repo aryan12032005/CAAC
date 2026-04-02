@@ -10,11 +10,13 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { label: "About Us", href: "/about" },
-  { label: "Team Member", href: "/team" },
-  { label: "Event Calendar", href: "/events" },
+  { label: "About", href: "/about" },
+  { label: "Team", href: "/team" },
+  { label: "Events", href: "/events" },
+  { label: "FDPs/Workshops", href: "/fdp-workshops" },
+  { label: "Grants", href: "/research-grants" },
   {
-    label: "Publication",
+    label: "Publications",
     href: "/publications",
     children: [
       { label: "2025", href: "/publications#pub-2025" },
@@ -73,7 +75,7 @@ const DesktopDropdown = ({ item }: { item: NavItem }) => {
     return (
       <NavLink
         href={item.href}
-        className={`relative px-4 py-3 text-base font-medium transition-all duration-300 rounded-md overflow-hidden group ${
+        className={`relative px-2 xl:px-3 py-2 text-sm xl:text-base font-semibold transition-all duration-300 rounded-md overflow-hidden group whitespace-nowrap ${
           isActive ? "text-primary bg-primary/5" : "text-foreground/80 hover:text-primary hover:bg-slate-100/50"
         }`}
       >
@@ -90,7 +92,7 @@ const DesktopDropdown = ({ item }: { item: NavItem }) => {
       <button
         onClick={() => setOpen(!open)}
         onMouseEnter={() => setOpen(true)}
-        className={`flex items-center gap-1.5 px-4 py-3 text-base font-medium transition-all duration-300 rounded-md ${
+        className={`flex items-center gap-1 px-2 xl:px-3 py-2 text-sm xl:text-base font-semibold transition-all duration-300 rounded-md whitespace-nowrap ${
           isActive ? "text-primary bg-primary/5" : "text-foreground/80 hover:text-primary hover:bg-slate-100/50"
         }`}
       >
@@ -181,20 +183,20 @@ const Navbar = () => {
   return (
     <>
       <header className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 border-b ${scrolled ? "bg-white/80 backdrop-blur-md shadow-lg border-border/50" : "bg-white/95 backdrop-blur-sm shadow-sm border-transparent"}`}>
-        <div className="w-full flex items-center justify-between pl-0 pr-4 sm:pr-6 lg:pr-12 h-24 md:h-28">
-          <Link to="/" className="flex items-center gap-3 pl-2 sm:pl-3 flex-shrink-0">
-            <img src={mruLogo} alt="Manav Rachna University" className="h-16 w-auto md:h-20" />
+        <div className="w-full flex items-center justify-between pl-0 pr-4 sm:pr-6 xl:pr-12 h-20 md:h-24">
+          <Link to="/" className="flex items-center gap-2 sm:gap-3 pl-2 sm:pl-3 flex-shrink-0">
+            <img src={mruLogo} alt="Manav Rachna University" className="h-12 w-auto md:h-16" />
             <div className="hidden sm:block leading-tight">
-              <div className="text-base md:text-lg font-bold tracking-wide text-primary uppercase">Manav Rachna University</div>
-              <div className="text-sm md:text-base text-muted-foreground font-medium">Center for AI and Advanced Computing</div>
+              <div className="text-sm md:text-base font-bold tracking-wide text-primary uppercase whitespace-nowrap">Manav Rachna University</div>
+              <div className="text-xs md:text-sm text-muted-foreground font-medium whitespace-nowrap">Center for AI and Advanced Computing</div>
             </div>
           </Link>
-          <nav className="hidden lg:flex items-center gap-1">
+          <nav className="hidden xl:flex items-center gap-0.5 justify-end">
             {navItems.map((item) => (
               <DesktopDropdown key={item.label} item={item} />
             ))}
           </nav>
-          <button onClick={() => setMobileOpen(true)} className="lg:hidden p-2 text-foreground">
+          <button onClick={() => setMobileOpen(true)} className="xl:hidden p-2 text-foreground ml-auto">
             <Menu className="w-6 h-6" />
           </button>
         </div>

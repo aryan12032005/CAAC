@@ -11,6 +11,8 @@ import PublicationsPage from "./pages/PublicationsPage";
 import ProjectsPage from "./pages/ProjectsPage";
 import BooksPage from "./pages/BooksPage";
 import CollaborationsPage from "./pages/CollaborationsPage";
+import FDPWorkshopsPage from "./pages/FDPWorkshopsPage";
+import ResearchGrantsPage from "./pages/ResearchGrantsPage";
 import NotFound from "./pages/NotFound";
 import ScrollToTop from "./components/ScrollToTop";
 
@@ -28,6 +30,8 @@ const App = () => (
           <Route path="/about" element={<AboutPage />} />
           <Route path="/team" element={<TeamPage />} />
           <Route path="/events" element={<EventsPage />} />
+          <Route path="/fdp-workshops" element={<FDPWorkshopsPage />} />
+          <Route path="/research-grants" element={<ResearchGrantsPage />} />
           <Route path="/publications" element={<PublicationsPage />} />
           <Route path="/projects" element={<ProjectsPage />} />
           <Route path="/books" element={<BooksPage />} />
