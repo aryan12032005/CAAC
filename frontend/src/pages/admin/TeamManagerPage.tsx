@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { apiRequest } from "@/lib/adminApi";
+import { getImageUrl } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -149,15 +150,19 @@ const TeamManagerPage = () => {
     <div className="grid gap-8 lg:grid-cols-12 md:pb-12">
       <div className="lg:col-span-5 flex flex-col gap-6">
         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.4 }}>
-          <Card className="border-muted/60 shadow-md">
-            <CardHeader className="bg-muted/30 border-b pb-4 mb-4">
-              <CardTitle className="flex items-center gap-2 text-xl text-primary">
-                {editingId ? <Edit2 className="h-5 w-5" /> : <Plus className="h-5 w-5" />}
+          <Card className="border-white/40 shadow-[0_8px_30px_rgb(0,0,0,0.04)] bg-white/70 backdrop-blur-xl rounded-2xl overflow-hidden">
+            <CardHeader className="bg-gradient-to-r from-slate-50 to-white/50 border-b border-slate-100 pb-5 mb-5 px-6">
+              <CardTitle className="flex items-center gap-3 text-xl text-slate-800 font-extrabold">
+                {editingId ? (
+                  <div className="p-2 rounded-lg bg-blue-50 text-blue-600"><Edit2 className="h-5 w-5" /></div>
+                ) : (
+                  <div className="p-2 rounded-lg bg-primary/10 text-primary"><Plus className="h-5 w-5" /></div>
+                )}
                 {editingId ? "Edit Team Member" : "Add Team Member"}
               </CardTitle>
-              <CardDescription>Fill out the details to {editingId ? 'update the' : 'add a new'} team member to the portal.</CardDescription>
+              <CardDescription className="text-slate-500 font-medium">Fill out the details to {editingId ? 'update the' : 'add a new'} team member to the portal.</CardDescription>
             </CardHeader>
-            <CardContent className="grid gap-5">
+            <CardContent className="grid gap-6 px-6 pb-6">
               <div className="grid gap-2">
                 <Label htmlFor="name" className="font-semibold">Full Name <span className="text-destructive">*</span></Label>
                 <Input
@@ -223,12 +228,12 @@ const TeamManagerPage = () => {
                 />
               </div>
 
-              <div className="flex gap-3 pt-2">
-                <Button onClick={saveItem} className="w-full sm:w-auto shadow-sm">
+              <div className="flex gap-4 pt-4 border-t border-slate-100 mt-2">
+                <Button onClick={saveItem} className="w-full sm:w-auto shadow-[0_4px_14px_0_rgba(15,23,42,0.15)] bg-slate-800 text-white hover:bg-slate-700 transition-all font-semibold rounded-xl px-8 focus:ring-4 focus:ring-slate-100">
                   {editingId ? "Update Member" : "Add Member"}
                 </Button>
                 {editingId && (
-                  <Button variant="outline" onClick={resetForm} className="w-full sm:w-auto">
+                  <Button variant="outline" onClick={resetForm} className="w-full sm:w-auto rounded-xl hover:bg-slate-50 transition-colors border-slate-200 text-slate-600 font-semibold px-6">
                     Cancel Edit
                   </Button>
                 )}
@@ -238,16 +243,16 @@ const TeamManagerPage = () => {
         </motion.div>
       </div>
 
-      <div className="lg:col-span-7 flex flex-col gap-4">
+      <div className="lg:col-span-7 flex flex-col gap-5">
         <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.4 }}>
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-bold tracking-tight">Manage Team</h2>
-            <div className="text-sm text-muted-foreground font-medium bg-muted/50 px-3 py-1 rounded-full">
+          <div className="flex justify-between items-center mb-6 bg-white/60 backdrop-blur-md px-6 py-4 rounded-2xl border border-white shadow-[0_4px_20px_rgb(0,0,0,0.03)]">
+            <h2 className="text-2xl font-extrabold tracking-tight text-slate-800">Manage Team</h2>
+            <div className="text-sm font-bold bg-gradient-to-br from-primary/10 to-blue-500/10 text-primary px-4 py-1.5 rounded-full border border-primary/10">
               {items.length} {items.length === 1 ? 'Member' : 'Members'}
             </div>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid gap-5 sm:grid-cols-2">
             {loading ? (
               Array.from({ length: 4 }).map((_, i) => (
                 <Card key={i} className="animate-pulse">
@@ -284,49 +289,60 @@ const TeamManagerPage = () => {
                     exit={{ opacity: 0, scale: 0.95, height: 0 }}
                     transition={{ duration: 0.2, delay: index * 0.05 }}
                   >
-                    <Card className="group border-muted hover:border-primary/30 transition-all shadow-sm hover:shadow-md h-full">
-                      <CardContent className="p-5 flex flex-col h-full bg-gradient-to-br from-background to-muted/20">
-                        <div className="flex items-start gap-4 mb-4">
-                          <Avatar className="h-14 w-14 border-2 border-background shadow-sm">
-                            <AvatarImage src={item.image || ""} alt={item.name} className="object-cover" />
-                            <AvatarFallback className="bg-primary/10 text-primary font-semibold text-lg">
-                              {item.name.charAt(0)}
-                            </AvatarFallback>
-                          </Avatar>
-                          <div className="flex-1 overflow-hidden">
-                            <h3 className="font-semibold text-lg text-foreground group-hover:text-primary transition-colors truncate">
+                    <Card className="group border-slate-200/60 bg-white/70 backdrop-blur-md shadow-sm hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05)] transition-all duration-300 h-full relative overflow-hidden rounded-2xl">
+                      <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-transparent pointer-events-none" />
+                      <div className="absolute -right-16 -top-16 w-32 h-32 rounded-full bg-primary/5 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+                      
+                      <CardContent className="p-6 flex flex-col h-full relative z-10">
+                        <div className="flex flex-col items-center text-center gap-3 mb-5">
+                          <div className="relative">
+                            <div className="absolute inset-0 bg-gradient-to-tr from-primary to-blue-400 rounded-full blur-md opacity-20 group-hover:opacity-40 transition-opacity duration-300" />
+                            <Avatar className="h-20 w-20 border-4 border-white shadow-sm relative">
+                              <AvatarImage src={getImageUrl(item.image)} alt={item.name} className="object-cover" />
+                              <AvatarFallback className="bg-gradient-to-br from-slate-100 to-slate-200 text-slate-700 font-bold text-2xl">
+                                {item.name.charAt(0)}
+                              </AvatarFallback>
+                            </Avatar>
+                          </div>
+                          
+                          <div className="flex flex-col items-center gap-1.5 w-full">
+                            <h3 className="font-extrabold text-lg text-slate-800 group-hover:text-primary transition-colors line-clamp-1 w-full px-2">
                               {item.name}
                             </h3>
-                            <Badge variant="secondary" className="mt-1 font-normal select-none">
+                            <Badge variant="outline" className="font-semibold bg-blue-50 text-blue-700 border-blue-200/60 px-3 py-0.5">
                               {item.category || "Faculty"}
                             </Badge>
                           </div>
                         </div>
 
-                        <div className="flex flex-col gap-2 mt-auto text-sm text-muted-foreground bg-background rounded-md p-3 border border-muted/50 mb-4">
-                          <div className="flex items-center gap-2">
-                            <Briefcase className="h-4 w-4 shrink-0 text-muted-foreground/70" />
-                            <span className="truncate">{item.designation}</span>
+                        <div className="flex flex-col gap-2.5 mt-auto text-sm text-slate-600 bg-slate-50/80 rounded-xl p-4 border border-slate-100/80 mb-5 w-full">
+                          <div className="flex items-center gap-3">
+                            <div className="bg-white p-1.5 rounded-md shadow-sm border border-slate-100 shrink-0">
+                              <Briefcase className="h-3.5 w-3.5 text-slate-400" />
+                            </div>
+                            <span className="truncate font-medium">{item.designation}</span>
                           </div>
                           {item.email && (
-                            <div className="flex items-center gap-2">
-                              <Mail className="h-4 w-4 shrink-0 text-muted-foreground/70" />
-                              <a href={`mailto:${item.email}`} className="truncate hover:text-primary transition-colors">
+                            <div className="flex items-center gap-3">
+                              <div className="bg-white p-1.5 rounded-md shadow-sm border border-slate-100 shrink-0">
+                                <Mail className="h-3.5 w-3.5 text-slate-400" />
+                              </div>
+                              <a href={`mailto:${item.email}`} className="truncate hover:text-primary transition-colors font-medium">
                                 {item.email}
                               </a>
                             </div>
                           )}
                         </div>
 
-                        <div className="flex gap-2 mt-auto pt-2 border-t border-muted/30">
-                          <Button size="sm" variant="secondary" onClick={() => startEdit(item)} className="flex-1">
-                            <Edit2 className="h-3 w-3 mr-2" /> Edit
+                        <div className="flex gap-3 mt-auto pt-4 border-t border-slate-100/80 w-full">
+                          <Button size="sm" variant="outline" onClick={() => startEdit(item)} className="flex-1 bg-white hover:bg-slate-50 hover:text-primary border-slate-200 h-9 rounded-xl font-semibold shadow-sm transition-all group-hover:border-primary/20">
+                            <Edit2 className="h-4 w-4 mr-2 text-slate-400 group-hover:text-primary transition-colors" /> Edit
                           </Button>
                           
                           <AlertDialog>
                             <AlertDialogTrigger asChild>
-                              <Button size="sm" variant="destructive" className="flex-1 bg-red-500/10 text-red-600 hover:bg-red-500 hover:text-white border border-red-200 hover:border-red-500 transition-colors">
-                                <Trash2 className="h-3 w-3 mr-2" /> Delete
+                              <Button size="sm" variant="outline" className="flex-1 bg-red-50 hover:bg-red-500 hover:text-white border-red-100 text-red-600 h-9 rounded-xl font-semibold shadow-sm transition-all">
+                                <Trash2 className="h-4 w-4 mr-2" /> Delete
                               </Button>
                             </AlertDialogTrigger>
                             <AlertDialogContent>

@@ -3,6 +3,7 @@ import { User, Cpu } from "lucide-react";
 import PageLayout from "@/components/PageLayout";
 import { motion } from "framer-motion";
 import { apiRequest } from "@/lib/adminApi";
+import { getImageUrl } from "@/lib/utils";
 
 type TeamMemberType = {
   _id: string;
@@ -41,7 +42,7 @@ const MemberCard = ({ member }: { member: TeamMemberType }) => (
     <div className="relative z-10">
       <div className="w-24 h-24 rounded-full bg-gradient-to-br from-slate-50 to-slate-100 border-2 border-primary/20 flex items-center justify-center mx-auto mb-6 shadow-inner group-hover:border-primary/50 transition-colors duration-300 overflow-hidden">
         {member.image ? (
-          <img src={member.image} alt={member.name} className="w-full h-full object-cover" />
+          <img src={getImageUrl(member.image)} alt={member.name} className="w-full h-full object-cover" />
         ) : (
           <User className="w-10 h-10 text-slate-400 group-hover:text-primary transition-colors duration-300" />
         )}

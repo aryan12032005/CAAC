@@ -178,15 +178,19 @@ const SectionManagerPage = ({ section, label }: SectionManagerPageProps) => {
     <div className="grid gap-8 lg:grid-cols-12 md:pb-12">
       <div className="lg:col-span-5 flex flex-col gap-6">
         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.4 }}>
-          <Card className="border-muted/60 shadow-md">
-            <CardHeader className="bg-muted/30 border-b pb-4 mb-4">
-              <CardTitle className="flex items-center gap-2 text-xl text-primary">
-                {editingId ? <Edit2 className="h-5 w-5" /> : <Plus className="h-5 w-5" />}
+          <Card className="border-white/40 shadow-[0_8px_30px_rgb(0,0,0,0.04)] bg-white/70 backdrop-blur-xl rounded-2xl overflow-hidden">
+            <CardHeader className="bg-gradient-to-r from-slate-50 to-white/50 border-b border-slate-100 pb-5 mb-5 px-6">
+              <CardTitle className="flex items-center gap-3 text-xl text-slate-800 font-extrabold">
+                {editingId ? (
+                  <div className="p-2 rounded-lg bg-blue-50 text-blue-600"><Edit2 className="h-5 w-5" /></div>
+                ) : (
+                  <div className="p-2 rounded-lg bg-primary/10 text-primary"><Plus className="h-5 w-5" /></div>
+                )}
                 {editingId ? `Edit ${label} Item` : `Add New ${label} Item`}
               </CardTitle>
-              <CardDescription>Fill out the form below to {editingId ? 'update the' : 'add a new'} item to the {label} section.</CardDescription>
+              <CardDescription className="text-slate-500 font-medium">Fill out the form below to {editingId ? 'update the' : 'add a new'} item to the {label} section.</CardDescription>
             </CardHeader>
-            <CardContent className="grid gap-5">
+            <CardContent className="grid gap-6 px-6 pb-6">
               <div className="grid gap-2">
                 <Label htmlFor="title" className="font-semibold">Title <span className="text-destructive">*</span></Label>
                 <Input
@@ -343,12 +347,12 @@ const SectionManagerPage = ({ section, label }: SectionManagerPageProps) => {
                 </div>
               </div>
 
-              <div className="flex gap-3 pt-2">
-                <Button onClick={saveItem} className="w-full sm:w-auto shadow-sm">
+              <div className="flex gap-4 pt-4 border-t border-slate-100 mt-2">
+                <Button onClick={saveItem} className="w-full sm:w-auto shadow-[0_4px_14px_0_rgba(15,23,42,0.15)] bg-slate-800 text-white hover:bg-slate-700 transition-all font-semibold rounded-xl px-8 focus:ring-4 focus:ring-slate-100">
                   {editingId ? "Update Item" : "Save Item"}
                 </Button>
                 {editingId && (
-                  <Button variant="outline" onClick={resetForm} className="w-full sm:w-auto">
+                  <Button variant="outline" onClick={resetForm} className="w-full sm:w-auto rounded-xl hover:bg-slate-50 transition-colors border-slate-200 text-slate-600 font-semibold px-6">
                     Cancel Edit
                   </Button>
                 )}
@@ -358,16 +362,16 @@ const SectionManagerPage = ({ section, label }: SectionManagerPageProps) => {
         </motion.div>
       </div>
 
-      <div className="lg:col-span-7 flex flex-col gap-4">
+      <div className="lg:col-span-7 flex flex-col gap-5">
         <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.4 }}>
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-bold tracking-tight">Manage {label}</h2>
-            <div className="text-sm text-muted-foreground font-medium bg-muted/50 px-3 py-1 rounded-full">
+          <div className="flex justify-between items-center mb-6 bg-white/60 backdrop-blur-md px-6 py-4 rounded-2xl border border-white shadow-[0_4px_20px_rgb(0,0,0,0.03)]">
+            <h2 className="text-2xl font-extrabold tracking-tight text-slate-800">Manage {label}</h2>
+            <div className="text-sm font-bold bg-gradient-to-br from-primary/10 to-blue-500/10 text-primary px-4 py-1.5 rounded-full border border-primary/10">
               {items.length} {items.length === 1 ? 'Item' : 'Items'}
             </div>
           </div>
           
-          <div className="grid gap-4">
+          <div className="grid gap-5">
             {loading ? (
               Array.from({ length: 3 }).map((_, i) => (
                 <Card key={i} className="animate-pulse">
@@ -404,22 +408,24 @@ const SectionManagerPage = ({ section, label }: SectionManagerPageProps) => {
                     exit={{ opacity: 0, scale: 0.95, height: 0 }}
                     transition={{ duration: 0.2, delay: index * 0.05 }}
                   >
-                    <Card className="group border-muted hover:border-primary/30 transition-all shadow-sm hover:shadow-md">
-                      <CardContent className="p-5 flex flex-col gap-3">
+                    <Card className="group border-slate-200/60 bg-white/70 backdrop-blur-md hover:bg-white transition-all duration-300 shadow-sm hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05)] rounded-2xl relative overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent pointer-events-none" />
+                      <CardContent className="p-6 flex flex-col gap-4 relative z-10">
                         <div>
-                          <h3 className="font-semibold text-lg text-foreground group-hover:text-primary transition-colors line-clamp-1">{item.title}</h3>
-                          {item.subtitle && <p className="text-sm font-medium text-muted-foreground mt-0.5 line-clamp-1">{item.subtitle}</p>}
+                          <h3 className="font-extrabold text-lg text-slate-800 group-hover:text-primary transition-colors line-clamp-1">{item.title}</h3>
+                          {item.subtitle && <p className="text-sm font-semibold text-slate-500 mt-1 line-clamp-1 flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-slate-300" />{item.subtitle}</p>}
                         </div>
                         
                         {(item.status || item.year) && (
-                          <div className="flex gap-2 w-fit">
+                          <div className="flex gap-2.5 w-fit">
                             {item.status && (
-                              <span className="inline-flex items-center rounded-md bg-primary/10 px-2 py-1 text-xs font-medium text-primary ring-1 ring-inset ring-primary/20 capitalize">
+                              <span className="inline-flex items-center rounded-lg bg-emerald-50 px-2.5 py-1 text-xs font-bold text-emerald-700 ring-1 ring-inset ring-emerald-600/20 capitalize shadow-sm">
                                 {item.status}
                               </span>
                             )}
                             {item.year && (
-                              <span className="inline-flex items-center rounded-md bg-muted px-2 py-1 text-xs font-medium text-muted-foreground ring-1 ring-inset ring-muted-foreground/20">
+                              <span className="inline-flex items-center rounded-lg bg-amber-50 px-2.5 py-1 text-xs font-bold text-amber-700 ring-1 ring-inset ring-amber-600/20 shadow-sm">
+                                <CalendarIcon className="w-3 h-3 mr-1" />
                                 {item.year}
                               </span>
                             )}
@@ -427,47 +433,47 @@ const SectionManagerPage = ({ section, label }: SectionManagerPageProps) => {
                         )}
 
                         {item.description && (
-                          <p className="text-sm text-muted-foreground/90 leading-relaxed line-clamp-2 bg-muted/20 p-2 rounded-md border border-muted/30">
+                          <div className="text-sm text-slate-600 leading-relaxed line-clamp-2 bg-slate-50/80 p-3 rounded-xl border border-slate-200/50 shadow-inner my-1">
                             {item.description}
-                          </p>
+                          </div>
                         )}
                         
-                        <div className="flex items-center gap-4 mt-1 text-xs text-muted-foreground">
+                        <div className="flex items-center gap-4 mt-2 text-xs font-medium text-slate-500">
                           {item.link && (
-                            <a href={item.link} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 hover:text-primary transition-colors">
+                            <a href={item.link} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 hover:text-blue-600 transition-colors bg-blue-50/50 px-2 py-1 rounded-md">
                               <LinkIcon className="h-3 w-3" /> External Link
                             </a>
                           )}
                           {(item.startDate || item.endDate) && (
-                            <div className="flex items-center gap-1">
-                              <CalendarIcon className="h-3 w-3" />
+                            <div className="flex items-center gap-1.5 bg-slate-50/50 px-2 py-1 rounded-md">
+                              <CalendarIcon className="h-3 w-3 text-slate-400" />
                               {item.startDate} {item.endDate ? `— ${item.endDate}` : ''}
                             </div>
                           )}
                         </div>
 
-                        <div className="mt-3 flex gap-2 pt-3 border-t border-muted/30">
-                          <Button size="sm" variant="secondary" onClick={() => startEdit(item)} className="w-24">
-                            <Edit2 className="h-3 w-3 mr-2" /> Edit
+                        <div className="mt-4 flex gap-3 pt-4 border-t border-slate-100/80">
+                          <Button size="sm" variant="secondary" onClick={() => startEdit(item)} className="w-full bg-slate-100/80 text-slate-700 hover:bg-slate-200 hover:text-slate-900 transition-all font-semibold rounded-xl shadow-sm border border-slate-200/50">
+                            <Edit2 className="h-4 w-4 mr-2 text-slate-500" /> Edit Entry
                           </Button>
                           
                           <AlertDialog>
                             <AlertDialogTrigger asChild>
-                              <Button size="sm" variant="destructive" className="w-24 bg-red-500/10 text-red-600 hover:bg-red-500 hover:text-white border border-red-200 hover:border-red-500 transition-colors">
-                                <Trash2 className="h-3 w-3 mr-2" /> Delete
+                              <Button size="sm" variant="destructive" className="w-full bg-red-50 text-red-600 hover:bg-red-500 hover:text-white border border-red-100 hover:border-red-500 transition-all font-semibold rounded-xl shadow-sm">
+                                <Trash2 className="h-4 w-4 mr-2" /> Delete
                               </Button>
                             </AlertDialogTrigger>
-                            <AlertDialogContent>
+                            <AlertDialogContent className="rounded-2xl border-slate-200/60 bg-white/90 backdrop-blur-xl shadow-2xl">
                               <AlertDialogHeader>
-                                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                                <AlertDialogDescription>
+                                <AlertDialogTitle className="text-xl font-bold text-slate-800">Are you absolutely sure?</AlertDialogTitle>
+                                <AlertDialogDescription className="text-slate-500">
                                   This action cannot be undone. This will permanently delete the 
-                                  <strong> {item.title}</strong> entry from the database.
+                                  <strong className="text-slate-800 font-bold px-1"> {item.title}</strong> entry from the database.
                                 </AlertDialogDescription>
                               </AlertDialogHeader>
-                              <AlertDialogFooter>
-                                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                <AlertDialogAction onClick={() => removeItem(item._id)} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                              <AlertDialogFooter className="mt-4">
+                                <AlertDialogCancel className="rounded-xl font-semibold border-slate-200 hover:bg-slate-50">Cancel</AlertDialogCancel>
+                                <AlertDialogAction onClick={() => removeItem(item._id)} className="rounded-xl font-bold bg-red-500 hover:bg-red-600 shadow-md shadow-red-500/20">
                                   Delete Permanently
                                 </AlertDialogAction>
                               </AlertDialogFooter>

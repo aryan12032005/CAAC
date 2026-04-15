@@ -51,18 +51,32 @@ const AdminDashboard = () => {
     }
   };
 
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return "Good morning";
+    if (hour < 18) return "Good afternoon";
+    return "Good evening";
+  };
+
   return (
-    <div className="flex flex-col gap-8 pb-10">
+    <div className="flex flex-col gap-10 pb-10 max-w-7xl mx-auto w-full">
       <motion.div 
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+        className="bg-white/60 backdrop-blur-xl border border-white shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-3xl p-8 md:p-10 relative overflow-hidden"
       >
-        <h1 className="text-4xl font-extrabold tracking-tight bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent pb-2">
-          Admin Dashboard
+        <div className="absolute top-[-20%] right-[-10%] w-[40%] h-[150%] rounded-full bg-gradient-to-l from-primary/10 to-blue-400/5 blur-[80px] pointer-events-none" />
+        
+        <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-slate-800 pb-2 relative z-10">
+          {getGreeting()},{" "}
+          <span className="bg-gradient-to-r from-primary via-blue-500 to-indigo-500 bg-clip-text text-transparent">
+            {adminInfo?.username}
+          </span>
+          <span className="inline-block ml-2 animate-[wave_2s_ease-in-out_infinite]">👋</span>
         </h1>
-        <p className="text-muted-foreground mt-2 text-lg">
-          Welcome back, <span className="font-semibold text-foreground">{adminInfo?.username}</span>. Select a section below to manage content.
+        <p className="text-slate-500 mt-2 text-lg md:text-xl font-medium max-w-2xl relative z-10">
+          Welcome to your command center. Select a section below to manage your organization's content efficiently.
         </p>
       </motion.div>
       
@@ -73,22 +87,29 @@ const AdminDashboard = () => {
         className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
       >
         {sections.map((section) => (
-          <motion.div key={section.path} variants={itemVariants} whileHover={{ y: -5 }} transition={{ duration: 0.2 }}>
-            <Link to={section.path} className="block h-full">
-              <Card className="hover:shadow-lg transition-all duration-300 h-full cursor-pointer relative overflow-hidden group border-muted/60 hover:border-primary/50">
-                <div className={`absolute -right-4 -top-4 w-24 h-24 rounded-full ${section.bg} blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <div className={`p-2 rounded-lg ${section.bg}`}>
-                    <section.icon className={`h-5 w-5 ${section.color}`} />
+          <motion.div key={section.path} variants={itemVariants} whileHover={{ y: -8, scale: 1.02 }} transition={{ duration: 0.2, type: "spring", stiffness: 300 }}>
+            <Link to={section.path} className="block h-full outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-2xl">
+              <Card className="bg-white/70 backdrop-blur-md hover:bg-white transition-all duration-300 h-full cursor-pointer relative overflow-hidden group border-slate-200/60 shadow-sm hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05)] rounded-2xl">
+                <div className={`absolute -right-8 -top-8 w-32 h-32 rounded-full ${section.bg} blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 ease-in-out`} />
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent to-white/40 pointer-events-none" />
+                
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3 relative z-10">
+                  <div className={`p-3 rounded-xl ${section.bg} shadow-inner`}>
+                    <section.icon className={`h-6 w-6 ${section.color}`} />
                   </div>
-                  <ChevronRight className="h-5 w-5 text-muted-foreground/50 group-hover:text-primary transition-colors group-hover:translate-x-1 duration-300" />
+                  <div className="w-8 h-8 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center group-hover:bg-primary group-hover:border-primary transition-colors duration-300 shadow-sm">
+                    <ChevronRight className="h-4 w-4 text-slate-400 group-hover:text-white transition-colors duration-300" />
+                  </div>
                 </CardHeader>
-                <CardContent className="pt-4">
-                  <CardTitle className="text-lg font-semibold group-hover:text-primary transition-colors">
+                <CardContent className="pt-2 relative z-10 pb-6">
+                  <CardTitle className="text-xl font-bold text-slate-800 group-hover:text-primary transition-colors duration-300">
                     {section.title}
                   </CardTitle>
-                  <p className="pt-2 text-sm text-muted-foreground leading-relaxed">{section.desc}</p>
+                  <p className="pt-2 text-sm text-slate-500 font-medium leading-relaxed">{section.desc}</p>
                 </CardContent>
+                
+                {/* Thin colored line at the bottom that expands on hover */}
+                <div className={`absolute bottom-0 left-0 h-1 w-0 bg-gradient-to-r from-transparent via-current to-transparent group-hover:w-full transition-all duration-700 ${section.color} opacity-50`} />
               </Card>
             </Link>
           </motion.div>
