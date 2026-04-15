@@ -10,6 +10,21 @@ import { useToast } from "@/hooks/use-toast";
 import { CalendarIcon, Edit2, Link as LinkIcon, Loader2, Plus, Trash2 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { motion, AnimatePresence } from "framer-motion";
+import { format } from "date-fns";
+import { cn } from "@/lib/utils";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -32,6 +47,8 @@ type SectionItem = {
   image?: string;
   startDate?: string;
   endDate?: string;
+  status?: string;
+  year?: string;
 };
 
 type SectionManagerPageProps = {
@@ -47,6 +64,8 @@ const emptyForm = {
   image: "",
   startDate: "",
   endDate: "",
+  status: "",
+  year: "",
 };
 
 const SectionManagerPage = ({ section, label }: SectionManagerPageProps) => {
@@ -132,6 +151,8 @@ const SectionManagerPage = ({ section, label }: SectionManagerPageProps) => {
       image: item.image || "",
       startDate: item.startDate || "",
       endDate: item.endDate || "",
+      status: item.status || "",
+      year: item.year || "",
     });
   };
 
@@ -226,34 +247,99 @@ const SectionManagerPage = ({ section, label }: SectionManagerPageProps) => {
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="grid gap-2">
-                  <Label htmlFor="startDate" className="font-semibold">Start Date</Label>
-                  <div className="relative">
-                    <Input
-                      id="startDate"
-                      type="date"
-                      className="focus-visible:ring-primary/50 pl-10"
-                      value={form.startDate}
-                      onChange={(event) =>
-                        setForm((prev) => ({ ...prev, startDate: event.target.value }))
-                      }
-                      placeholder="YYYY-MM-DD"
-                    />
-                    <CalendarIcon className="h-4 w-4 absolute left-3 top-3 text-muted-foreground" />
-                  </div>
+                  <Label className="font-semibold">Year</Label>
+                  <Select
+                    value={form.year || "none"}
+                    onValueChange={(value) => setForm((prev) => ({ ...prev, year: value === "none" ? "" : value }))}
+                  >
+                    <SelectTrigger className="focus-visible:ring-primary/50">
+                      <SelectValue placeholder="Select year (optional)" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">None</SelectItem>
+                      <SelectItem value="2025">2025</SelectItem>
+                      <SelectItem value="2026">2026</SelectItem>
+                      <SelectItem value="2027">2027</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div className="grid gap-2">
+                  <Label className="font-semibold">Status</Label>
+                  <Select
+                    value={form.status || "none"}
+                    onValueChange={(value) => setForm((prev) => ({ ...prev, status: value === "none" ? "" : value }))}
+                  >
+                    <SelectTrigger className="focus-visible:ring-primary/50 capitalize">
+                      <SelectValue placeholder="Select status (optional)" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">None</SelectItem>
+                      <SelectItem value="communicated">Communicated</SelectItem>
+                      <SelectItem value="published">Published</SelectItem>
+                      <SelectItem value="granted">Granted</SelectItem>
+                      <SelectItem value="sanctioned">Sanctioned</SelectItem>
+                      <SelectItem value="ongoing">Ongoing</SelectItem>
+                      <SelectItem value="completed">Completed</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="grid gap-2">
+                  <Label className="font-semibold">Start Date</Label>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant={"outline"}
+                        className={cn(
+                          "justify-start text-left font-normal focus-visible:ring-primary/50",
+                          !form.startDate && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {form.startDate ? format(new Date(form.startDate), "PPP") : <span>Pick a date</span>}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={form.startDate ? new Date(form.startDate) : undefined}
+                        onSelect={(date) =>
+                          setForm((prev) => ({ ...prev, startDate: date ? format(date, "yyyy-MM-dd") : "" }))
+                        }
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="endDate" className="font-semibold">End Date</Label>
-                  <div className="relative">
-                    <Input
-                      id="endDate"
-                      type="date"
-                      className="focus-visible:ring-primary/50 pl-10"
-                      value={form.endDate}
-                      onChange={(event) => setForm((prev) => ({ ...prev, endDate: event.target.value }))}
-                      placeholder="YYYY-MM-DD"
-                    />
-                    <CalendarIcon className="h-4 w-4 absolute left-3 top-3 text-muted-foreground" />
-                  </div>
+                  <Label className="font-semibold">End Date</Label>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant={"outline"}
+                        className={cn(
+                          "justify-start text-left font-normal focus-visible:ring-primary/50",
+                          !form.endDate && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {form.endDate ? format(new Date(form.endDate), "PPP") : <span>Pick a date</span>}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={form.endDate ? new Date(form.endDate) : undefined}
+                        onSelect={(date) =>
+                          setForm((prev) => ({ ...prev, endDate: date ? format(date, "yyyy-MM-dd") : "" }))
+                        }
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
                 </div>
               </div>
 
@@ -325,6 +411,21 @@ const SectionManagerPage = ({ section, label }: SectionManagerPageProps) => {
                           {item.subtitle && <p className="text-sm font-medium text-muted-foreground mt-0.5 line-clamp-1">{item.subtitle}</p>}
                         </div>
                         
+                        {(item.status || item.year) && (
+                          <div className="flex gap-2 w-fit">
+                            {item.status && (
+                              <span className="inline-flex items-center rounded-md bg-primary/10 px-2 py-1 text-xs font-medium text-primary ring-1 ring-inset ring-primary/20 capitalize">
+                                {item.status}
+                              </span>
+                            )}
+                            {item.year && (
+                              <span className="inline-flex items-center rounded-md bg-muted px-2 py-1 text-xs font-medium text-muted-foreground ring-1 ring-inset ring-muted-foreground/20">
+                                {item.year}
+                              </span>
+                            )}
+                          </div>
+                        )}
+
                         {item.description && (
                           <p className="text-sm text-muted-foreground/90 leading-relaxed line-clamp-2 bg-muted/20 p-2 rounded-md border border-muted/30">
                             {item.description}

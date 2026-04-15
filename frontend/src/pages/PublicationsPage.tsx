@@ -19,18 +19,34 @@ const PublicationsPage = () => {
   const { items, loading } = useSectionItems("publications");
 
   const buildPublications = () => {
-    const data: Record<string, Record<string, any[]>> = {
-      "2025": { Published: [], Communicated: [] },
-      "2026": { Published: [], Communicated: [] },
-    };
+    const data: Record<string, Record<string, any[]>> = {};
 
     items.forEach((item) => {
-      const year = item.startDate?.includes("2026") ? "2026" : "2025";
-      const status = item.description?.toLowerCase().includes("communicate") ? "Communicated" : "Published";
+      let year = "Unknown Year";
+      if (item.startDate) {
+        const parsedYear = new Date(item.startDate).getFullYear();
+        if (!isNaN(parsedYear)) year = parsedYear.toString();
+      }
+
+      let status = "published"; // default
+      if (item.status) {
+        status = item.status.toLowerCase();
+      } else if (item.description?.toLowerCase().includes("communicate")) {
+        status = "communicated";
+      } else if (item.description?.toLowerCase().includes("grant")) {
+        status = "granted";
+      }
+
+      const displayStatus = status.charAt(0).toUpperCase() + status.slice(1);
+
+      if (!data[year]) {
+        data[year] = { Published: [], Communicated: [], Granted: [] };
+      }
+      if (!data[year][displayStatus]) {
+        data[year][displayStatus] = [];
+      }
       
-      if (!data[year][status]) data[year][status] = [];
-      
-      data[year][status].push({
+      data[year][displayStatus].push({
         title: item.title,
         authors: item.description?.replace("Peer-reviewed paper on ", "") || "CAAC Team",
         journal: item.subtitle || "Journal",
@@ -38,29 +54,41 @@ const PublicationsPage = () => {
       });
     });
 
+    // Make sure we have some default years if empty
+    if (Object.keys(data).length === 0) {
+      data["2025"] = { Published: [], Communicated: [], Granted: [] };
+    }
+
     return data;
   };
 
   const publications = buildPublications();
+  const availableYears = Object.keys(publications).sort((a, b) => parseInt(b) - parseInt(a));
+  const defaultYear = availableYears.length > 0 ? availableYears[0] : "2025";
 
   return (
     <PageLayout title="Publications" subtitle="Peer-reviewed research contributions from our center shaping global technological discourse.">
       {loading ? (
         <div className="text-center py-12"><p className="text-slate-500">Loading publications...</p></div>
       ) : (
-        <Tabs defaultValue="2025" className="w-full">
+        <Tabs defaultValue={defaultYear} className="w-full">
           <div className="flex justify-center mb-12">
-            <TabsList className="grid w-full max-w-sm grid-cols-2 bg-slate-100 p-1.5 rounded-xl">
-              <TabsTrigger value="2025" className="rounded-lg text-base font-semibold data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all py-2.5">2025</TabsTrigger>
-              <TabsTrigger value="2026" className="rounded-lg text-base font-semibold data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all py-2.5">2026</TabsTrigger>
+            <TabsList className="grid w-full w-fit flex bg-slate-100 p-1.5 rounded-xl overflow-x-auto justify-start">
+              {availableYears.map(year => (
+                <TabsTrigger key={year} value={year} className="px-6 rounded-lg text-base font-semibold data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all py-2.5">
+                  {year}
+                </TabsTrigger>
+              ))}
             </TabsList>
           </div>
 
-          {Object.entries(publications).map(([year, sections]) => (
-            <TabsContent key={year} value={year} className="mt-0 focus-visible:outline-none">
-              <motion.div 
-                id={`pub-${year}`} 
-                className="mb-14 last:mb-0 relative"
+          {availableYears.map(year => {
+            const sections = publications[year];
+            return (
+              <TabsContent key={year} value={year} className="mt-0 focus-visible:outline-none">
+                <motion.div 
+                  id={`pub-${year}`} 
+                  className="mb-14 last:mb-0 relative"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
@@ -129,7 +157,7 @@ const PublicationsPage = () => {
                 </div>
               </motion.div>
             </TabsContent>
-          ))}
+          )})}
         </Tabs>
       )}
     </PageLayout>

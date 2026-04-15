@@ -20,18 +20,34 @@ const BooksPage = () => {
   const years = ["2025", "2026"];
 
   const buildBooksData = () => {
-    const data: Record<string, Record<string, any[]>> = {
-      "2025": { Published: [], Accepted: [] },
-      "2026": { Published: [], Accepted: [] },
-    };
+    const data: Record<string, Record<string, any[]>> = {};
 
     items.forEach((item) => {
-      const year = item.startDate?.includes("2026") ? "2026" : "2025";
-      const status = item.description?.toLowerCase().includes("accept") ? "Accepted" : "Published";
-      
-      if (!data[year][status]) data[year][status] = [];
-      
-      data[year][status].push({
+      let year = "Unknown Year";
+      if (item.year) {
+        year = item.year;
+      } else if (item.startDate) {
+        const parsedYear = new Date(item.startDate).getFullYear();
+        if (!isNaN(parsedYear)) year = parsedYear.toString();
+      }
+
+      let status = "published";
+      if (item.status) {
+        status = item.status.toLowerCase();
+      } else if (item.description?.toLowerCase().includes("accept")) {
+        status = "accepted";
+      }
+
+      const displayStatus = status.charAt(0).toUpperCase() + status.slice(1);
+
+      if (!data[year]) {
+        data[year] = { Published: [], Accepted: [] };
+      }
+      if (!data[year][displayStatus]) {
+        data[year][displayStatus] = [];
+      }
+
+      data[year][displayStatus].push({
         title: item.title,
         authors: item.description || "CAAC Faculty",
         publisher: item.subtitle || "Publisher",
@@ -40,25 +56,34 @@ const BooksPage = () => {
       });
     });
 
+    if (Object.keys(data).length === 0) {
+      data["2025"] = { Published: [], Accepted: [] };
+    }
+
     return data;
   };
 
   const booksData = buildBooksData();
+  const availableYears = Object.keys(booksData).sort((a, b) => parseInt(b) - parseInt(a));
+  const defaultYear = availableYears.length > 0 ? availableYears[0] : "2025";
 
   return (
     <PageLayout title="Books & Archives" subtitle="Discover globally recognized authored and edited volumes by our esteemed faculty.">
       {loading ? (
         <div className="text-center py-12"><p className="text-slate-500">Loading books...</p></div>
       ) : (
-        <Tabs defaultValue="2025" className="w-full mt-8">
+        <Tabs defaultValue={defaultYear} className="w-full mt-8">
           <div className="flex justify-center mb-12">
-            <TabsList className="grid w-full max-w-[280px] grid-cols-2">
-              <TabsTrigger value="2025">2025</TabsTrigger>
-              <TabsTrigger value="2026">2026</TabsTrigger>
+            <TabsList className="grid w-fit flex bg-slate-100 p-1.5 rounded-xl overflow-x-auto justify-start">
+              {availableYears.map(year => (
+                <TabsTrigger key={year} value={year} className="px-6 rounded-lg text-base font-semibold data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all py-2.5">
+                  {year}
+                </TabsTrigger>
+              ))}
             </TabsList>
           </div>
 
-          {years.map((year) => (
+          {availableYears.map((year) => (
             <TabsContent key={year} value={year} className="mt-0">
               <div className="space-y-16">
                 {Object.entries(booksData[year]).map(([status, groupItems]) => groupItems.length > 0 && (

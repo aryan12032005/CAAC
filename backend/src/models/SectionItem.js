@@ -46,6 +46,14 @@ const sectionItemSchema = mongoose.Schema(
       type: String,
       trim: true,
     },
+    status: {
+      type: String,
+      default: "",
+    },
+    year: {
+      type: String,
+      default: "",
+    }
   },
   {
     timestamps: true,

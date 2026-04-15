@@ -22,19 +22,22 @@ const ResearchGrantsPage = () => {
     const sanctioned: any[] = [];
     
     items.forEach((item, idx) => {
-      const isSanctioned = Object.values(item).some(v => String(v).toLowerCase().includes('sanctioned'));
+      const isSanctioned =
+        item.status?.toLowerCase() === "sanctioned" ||
+        Object.values(item).some((v) => String(v).toLowerCase().includes("sanctioned"));
+
       const grant = {
         id: item._id || idx.toString(),
         title: item.title,
         principalInvestigator: "CAAC Investigator",
         fundingAgency: item.subtitle || "Agency",
         amount: item.link || "TBD",
-        year: item.startDate || "TBA",
+        year: item.year || item.startDate || "TBA",
         duration: item.endDate || "TBD",
-        status: isSanctioned ? "Sanctioned" : "Granted"
+        status: item.status ? item.status.charAt(0).toUpperCase() + item.status.slice(1) : (isSanctioned ? "Sanctioned" : "Granted"),
       };
       
-      if (isSanctioned) {
+      if (item.status?.toLowerCase() === "sanctioned" || isSanctioned) {
         sanctioned.push(grant);
       } else {
         granted.push(grant);

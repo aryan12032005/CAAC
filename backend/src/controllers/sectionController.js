@@ -24,14 +24,14 @@ export const createSectionItem = async (req, res) => {
     return res.status(400).json({ message: "Invalid section" });
   }
 
-  const { title, subtitle, description, link, image, startDate, endDate } = req.body;
+  const { title, subtitle, description, link, image, startDate, endDate, status, year } = req.body;
 
   if (!title) {
     return res.status(400).json({ message: "Title is required" });
   }
 
   try {
-    const item = await SectionItem.create({
+    const item = new SectionItem({
       section,
       title,
       subtitle,
@@ -40,6 +40,8 @@ export const createSectionItem = async (req, res) => {
       image,
       startDate,
       endDate,
+      status,
+      year,
     });
 
     res.status(201).json(item);
@@ -58,7 +60,7 @@ export const updateSectionItem = async (req, res) => {
       return res.status(404).json({ message: "Item not found" });
     }
 
-    const { title, subtitle, description, link, image, startDate, endDate } = req.body;
+    const { title, subtitle, description, link, image, startDate, endDate, status, year } = req.body;
 
     item.title = title ?? item.title;
     item.subtitle = subtitle ?? item.subtitle;
@@ -67,6 +69,8 @@ export const updateSectionItem = async (req, res) => {
     item.image = image ?? item.image;
     item.startDate = startDate ?? item.startDate;
     item.endDate = endDate ?? item.endDate;
+    item.status = status ?? item.status;
+    item.year = year ?? item.year;
 
     const updated = await item.save();
     res.json(updated);
