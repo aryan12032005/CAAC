@@ -18,7 +18,6 @@ const teamMemberSchema = mongoose.Schema(
     },
     category: {
       type: String,
-      enum: ['Faculty', 'Staff', 'Research Scholar'],
       default: 'Faculty'
     }
   },
