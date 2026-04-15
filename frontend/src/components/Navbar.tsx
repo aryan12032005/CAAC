@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, ChevronDown } from "lucide-react";
+import { Menu, X, ChevronDown, ShieldCheck } from "lucide-react";
 import mruLogo from "@/assets/mru-logo.png";
 
 interface NavItem {
@@ -137,6 +137,14 @@ const MobileNav = ({ items, onClose }: { items: NavItem[]; onClose: () => void }
         </button>
       </div>
       <nav className="px-4 py-4 overflow-y-auto max-h-[calc(100vh-72px)]">
+        <Link
+          to="/admin"
+          onClick={onClose}
+          className="mb-3 flex items-center justify-center gap-2 rounded-lg border border-primary/20 bg-primary/5 px-3 py-2 text-sm font-semibold text-primary"
+        >
+          <ShieldCheck className="h-4 w-4" />
+          Super Admin Login
+        </Link>
         {items.map((item) => (
           <div key={item.label} className="border-b border-border/50">
             {item.children ? (
@@ -195,6 +203,13 @@ const Navbar = () => {
             {navItems.map((item) => (
               <DesktopDropdown key={item.label} item={item} />
             ))}
+            <Link
+              to="/admin"
+              className="ml-2 inline-flex items-center gap-1 rounded-md border border-primary/20 bg-primary/5 px-3 py-2 text-sm font-semibold text-primary hover:bg-primary/10"
+            >
+              <ShieldCheck className="h-4 w-4" />
+              Admin
+            </Link>
           </nav>
           <button onClick={() => setMobileOpen(true)} className="xl:hidden p-2 text-foreground ml-auto">
             <Menu className="w-6 h-6" />
@@ -202,6 +217,13 @@ const Navbar = () => {
         </div>
       </header>
       {mobileOpen && <MobileNav items={navItems} onClose={() => setMobileOpen(false)} />}
+      <Link
+        to="/admin"
+        className="fixed bottom-4 right-4 z-40 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-white px-4 py-2 text-sm font-semibold text-primary shadow-lg hover:bg-primary/5"
+      >
+        <ShieldCheck className="h-4 w-4" />
+        Admin Login
+      </Link>
     </>
   );
 };

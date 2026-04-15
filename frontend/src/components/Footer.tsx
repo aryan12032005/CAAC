@@ -7,6 +7,7 @@ const quickLinks = [
   { label: "Publications", to: "/publications" },
   { label: "Projects", to: "/projects" },
   { label: "Collaborations", to: "/collaborations" },
+  { label: "Super Admin Login", to: "/admin" },
 ];
 
 const Footer = () => (
