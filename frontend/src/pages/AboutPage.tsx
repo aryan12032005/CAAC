@@ -20,7 +20,7 @@ const AboutPage = () => (
           </div>
           <h3 className="font-heading text-3xl font-bold text-navy tracking-tight">Objective</h3>
         </div>
-        <ul className="font-body text-slate-600 leading-relaxed z-10 relative space-y-3">
+        <ul className="font-body text-slate-600 leading-relaxed z-10 relative space-y-3 text-justify">
           <li className="flex gap-2">
             <span className="text-primary font-bold min-w-fit">•</span>
             <span>To bridge the gap between Academics & Research.</span>
@@ -59,7 +59,7 @@ const AboutPage = () => (
           </div>
           <h3 className="font-heading text-3xl font-bold text-navy tracking-tight">Mission</h3>
         </div>
-        <ul className="font-body text-slate-600 leading-relaxed z-10 relative space-y-3">
+        <ul className="font-body text-slate-600 leading-relaxed z-10 relative space-y-3 text-justify">
           <li className="flex gap-2">
             <span className="text-amber-600 font-bold min-w-fit">•</span>
             <span>To develop a Collaborative Ecosystem by including experts of various domains from academia and industry.</span>
@@ -90,7 +90,7 @@ const AboutPage = () => (
           </div>
           <h3 className="font-heading text-3xl font-bold text-navy tracking-tight">Vision</h3>
         </div>
-        <p className="font-body text-slate-600 leading-relaxed text-lg z-10 relative">
+        <p className="font-body text-slate-600 leading-relaxed text-lg z-10 relative text-justify">
           To build a <span className="font-semibold">collaborative ecosystem</span> where research and innovation in Artificial Intelligence and Advanced Computing inspire breakthrough technologies to solve the <span className="font-semibold">real-world applications</span>, aligning with SDG's for <span className="font-semibold">societal benefit, industrial growth,</span> and <span className="font-semibold">academic excellence.</span>
         </p>
       </motion.div>
