@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
 import { User, Cpu } from "lucide-react";
 import PageLayout from "@/components/PageLayout";
 import { motion } from "framer-motion";
 import { apiRequest } from "@/lib/adminApi";
 import { getImageUrl } from "@/lib/utils";
+import { useQuery } from "@tanstack/react-query";
 
 type TeamMemberType = {
   _id: string;
@@ -59,22 +59,15 @@ const MemberCard = ({ member }: { member: TeamMemberType }) => (
 );
 
 const TeamPage = () => {
-  const [items, setItems] = useState<TeamMemberType[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const loadTeam = async () => {
-      try {
-        const data = await apiRequest<TeamMemberType[]>("/api/team");
-        setItems(data);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    loadTeam();
-  }, []);
+  const { data: items = [], isLoading: loading } = useQuery({
+    queryKey: ["teamMembers"],
+    queryFn: async () => {
+      const data = await apiRequest<TeamMemberType[]>("/api/team");
+      return data;
+    },
+    staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
 
   const leaders = items.filter(m => m.designation?.toLowerCase().includes("director") || m.designation?.toLowerCase().includes("lead"));
   const regularMembers = items.filter(m => !m.designation?.toLowerCase().includes("director") && !m.designation?.toLowerCase().includes("lead"));
